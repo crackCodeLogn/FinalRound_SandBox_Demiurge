@@ -4,6 +4,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Worker;
+import javafx.concurrent.Worker.State;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -12,6 +13,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -20,23 +22,19 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebHistory;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
-import javafx.scene.image.Image;
-import javafx.concurrent.Worker.State;
 import javafx.stage.WindowEvent;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.awt.*;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
-
 
 /**
  * @author Vivek
  * @version 1.0
  * @since 28-03-2018
- *
+ * <p>
  * Details:-
  * WebView does not support plugins like flash / adobe
  */
@@ -58,8 +56,8 @@ public class Albedo_Browser extends Application implements EventHandler<ActionEv
     public static boolean downloadsFrameOpen = false;
     public static boolean menuFrameOpen = false;
 
-    final WebView browser = new WebView();
-    final WebEngine webEngine = browser.getEngine();
+    public static WebView browser;
+    public static WebEngine webEngine;
 
     private static String currentURL = "";
     private static String homePageURL = "https://bing.com";
@@ -67,10 +65,19 @@ public class Albedo_Browser extends Application implements EventHandler<ActionEv
     @Override
     public void start(final Stage primaryStage) throws Exception {
         primaryStage.setTitle("Albedo");
+        primaryStage.getIcons().add(new Image(new FileInputStream("resources/cover_thumbnail.jpg")));
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         //primaryStage.setWidth(screenSize.getWidth());
         //primaryStage.setHeight(screenSize.getHeight());
         primaryStage.setMaximized(true);
+        textFieldStatusDisplay.setEditable(false);
+        textFieldStatusDisplay.setDisable(true);
+
+        if (browser == null) {
+            System.out.println("initializing the engine!");
+            browser = new WebView();
+            webEngine = browser.getEngine();
+        }
 
         webEngine.setJavaScriptEnabled(true);
         java.net.CookieHandler.setDefault(null);
@@ -146,7 +153,13 @@ public class Albedo_Browser extends Application implements EventHandler<ActionEv
             public void handle(ActionEvent event) {
                 System.out.println("Invoked from refresh handler -- CURRENT URL : " + currentURL);
                 if (currentURL.length() > 1) {
-                    webEngine.load(currentURL);
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            webEngine.load(currentURL);
+                        }
+                    });
+
                 } else {
                     System.out.println("Nothing to refresh!");
                 }
@@ -160,7 +173,13 @@ public class Albedo_Browser extends Application implements EventHandler<ActionEv
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("Executing home button call");
-                webEngine.load(homePageURL);
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        webEngine.load(homePageURL);
+                    }
+                });
+
             }
         });
 
@@ -170,7 +189,7 @@ public class Albedo_Browser extends Application implements EventHandler<ActionEv
         buttonAbort.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("CANCELLING the run of the url -- "+currentURL);
+                System.out.println("CANCELLING the run of the url -- " + currentURL);
                 webEngine.getLoadWorker().cancel();
             }
         });
@@ -194,7 +213,13 @@ public class Albedo_Browser extends Application implements EventHandler<ActionEv
             public void handle(ActionEvent e) {
                 String finalURL = "https://" + textField.getText();
 
-                webEngine.load(finalURL);
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        webEngine.load(finalURL);
+                    }
+                });
+
 
                 System.out.println("URL loaded " + finalURL);
                 //System.out.println("History : \n"+webEngine.getHistory());
@@ -220,6 +245,28 @@ public class Albedo_Browser extends Application implements EventHandler<ActionEv
         primaryStage.setScene(scene);
         primaryStage.show();
 
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                //Erasing the downloads folder before closing the browser
+                Albedo_Browser_Downloads.clearDownloads();
+                System.out.println("SHUTTING DOWN!!");
+            }
+        });
+
+        webEngine.getLoadWorker().progressProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                System.out.println("WORK DONE FROM PROGRESS LISTENER : "+webEngine.getLoadWorker().getWorkDone());
+                if(textFieldStatusDisplay.getText()!=null){
+                    if(textFieldStatusDisplay.getText().contains("RUN")){
+                        String local = String.valueOf(webEngine.getLoadWorker().getWorkDone());
+                        textFieldStatusDisplay.setText("RUNNING - "+local.substring(0, local.indexOf('.'))+"%");
+                    }
+                }
+            }
+        });
+
         //the below listener hooks on to the final complete load of each and every page load occuring in the browser
         webEngine.getLoadWorker().stateProperty().addListener(
                 new ChangeListener<State>() {
@@ -228,6 +275,7 @@ public class Albedo_Browser extends Application implements EventHandler<ActionEv
 
                         System.out.println("\t\tLoading stat : " + newState.toString());
                         System.out.println("\t\t\tLoad stat location : " + webEngine.getLocation() + ", load stat title : " + webEngine.getTitle());
+                        System.out.println("WORK DONE : "+webEngine.getLoadWorker().getWorkDone());
                         currentURL = webEngine.getLocation();
 
                         if (newState == State.READY) {
@@ -238,6 +286,14 @@ public class Albedo_Browser extends Application implements EventHandler<ActionEv
                         }
                         if (newState == State.RUNNING) {
                             textFieldStatusDisplay.setText("RUNNING");
+                            currentURL = webEngine.getLocation();
+                            String localURL = "";
+                            try {
+                                localURL = currentURL.substring(currentURL.indexOf('/') + 2);
+                            } catch (Exception e1) {
+                                System.out.println("URL substringing failed!");
+                            }
+                            textFieldController.setText(localURL);
                         }
                         if (newState == State.FAILED) {
                             textFieldStatusDisplay.setText("FAILED");
@@ -245,8 +301,15 @@ public class Albedo_Browser extends Application implements EventHandler<ActionEv
                         if (newState == Worker.State.SUCCEEDED) {
                             //primaryStage.setTitle(webEngine.getLocation());
                             textFieldStatusDisplay.setText("SUCCEEDED");
-                            primaryStage.setTitle(webEngine.getTitle());
+                            //primaryStage.setTitle(webEngine.getTitle());
                             currentURL = webEngine.getLocation();
+                            String localURL = "";
+                            try {
+                                localURL = currentURL.substring(currentURL.indexOf('/') + 2);
+                            } catch (Exception e1) {
+                                System.out.println("URL substringing failed!");
+                            }
+                            textFieldController.setText(localURL);
                             System.out.println("called INTERNAL : " + webEngine.getTitle());
 
                             printHistory("History called internally", webEngine);
@@ -268,7 +331,7 @@ public class Albedo_Browser extends Application implements EventHandler<ActionEv
                                     }
                                 });
                             } else {
-                                System.out.println("Else part cancelled out executed --> concerned url : "+currentURL);
+                                System.out.println("Else part cancelled out executed --> concerned url : " + currentURL);
                             }
                         }
                     }
