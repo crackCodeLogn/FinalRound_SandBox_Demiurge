@@ -327,7 +327,12 @@ public class Albedo_Browser extends Application implements EventHandler<ActionEv
                                 Platform.runLater(new Runnable() {
                                     @Override
                                     public void run() {
-                                        new CZ_HttpsDownloadTrial(currentURL);
+                                        //new CZ_HttpsDownloadTrial(currentURL);
+                                        try {
+                                            new CZ_HttpsDownload(currentURL).start(new Stage());
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
                                     }
                                 });
                             } else {
