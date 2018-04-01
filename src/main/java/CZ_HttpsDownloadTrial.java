@@ -1,4 +1,5 @@
 import com.sun.xml.internal.ws.handler.HandlerTube;
+import javafx.application.Platform;
 import org.apache.commons.io.FileUtils;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -16,7 +17,7 @@ public class CZ_HttpsDownloadTrial {
     static String toFile = "lecture100x200P.pdf";
     static boolean failedProcess = false;
 
-    public CZ_HttpsDownloadTrial(String fromFile){
+    public CZ_HttpsDownloadTrial(String fromFile) {
         try {
             //connectionTimeout, readTimeout = 10 seconds
             //FileUtils.copyURLToFile(new URL(fromFile), new File(toFile), 10000, 10000);
@@ -26,34 +27,34 @@ public class CZ_HttpsDownloadTrial {
 
             String contentLength = "";
             String contentName = "";
-            long maxSize=0;
+            long maxSize = 0;
 
-            if(fromFile.startsWith("https:")){
+            if (fromFile.startsWith("https:")) {
                 HttpsURLConnection httpsURLConnection = (HttpsURLConnection) new URL(fromFile).openConnection();
                 contentLength = httpsURLConnection.getHeaderField("Content-Length");
                 contentName = httpsURLConnection.getHeaderField("Content-Disposition");
-                System.out.println("Name : "+contentName);
+                System.out.println("Name : " + contentName);
                 httpsURLConnection.disconnect();
                 maxSize = Long.parseLong(contentLength);
 
-                System.out.println("via https Download size: "+contentLength+" bytes --> "+(maxSize/1024)+" KB");
-            } else if(fromFile.startsWith("http:")){
+                System.out.println("via https Download size: " + contentLength + " bytes --> " + (maxSize / 1024) + " KB");
+            } else if (fromFile.startsWith("http:")) {
                 HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(fromFile).openConnection();
                 contentLength = httpURLConnection.getHeaderField("Content-Length");
                 contentName = httpURLConnection.getHeaderField("Content-Disposition");
-                System.out.println("Name : "+contentName);
+                System.out.println("Name : " + contentName);
                 httpURLConnection.disconnect();
                 maxSize = Long.parseLong(contentLength);
 
-                System.out.println("via http Download size : "+contentLength+" bytes --> "+(maxSize/1024)+" KB");
+                System.out.println("via http Download size : " + contentLength + " bytes --> " + (maxSize / 1024) + " KB");
             }
 
-            if(contentName==null || contentName.length()==0){
-                contentName = fromFile.substring(fromFile.lastIndexOf('/')+1);
+            if (contentName == null || contentName.length() == 0) {
+                contentName = fromFile.substring(fromFile.lastIndexOf('/') + 1);
                 toFile = contentName;
-                System.out.println("Destination file renamed to : "+toFile);
-                toFile = "e:\\sandbox_target\\tmp\\"+toFile;
-                System.out.println("Rewriting the destination file renamed to : "+toFile);
+                System.out.println("Destination file renamed to : " + toFile);
+                toFile = "e:\\sandbox_target\\tmp\\" + toFile;
+                System.out.println("Rewriting the destination file renamed to : " + toFile);
             }
 
             System.out.println("PASS-1");
@@ -71,37 +72,45 @@ public class CZ_HttpsDownloadTrial {
                         }
                     }
                 }).start();
-            } catch (Exception e223){
-                System.out.println("Exceptionnnnnnnnnnnn : "+e223);
+            } catch (Exception e223) {
+                System.out.println("Exceptionnnnnnnnnnnn : " + e223);
             }
 
             System.out.println("PASS - 2");
             //file length is returned in bytes, as is confirmed in testing arena
-            long current = 0, prev = 0;
+            final long[] current = {0};
+            final long[] prev = {0};
             File file = new File(toFile);
-            String downloadStat = "";
-            while(current < maxSize && !failedProcess) {
-                current = file.length();
-                if(current!=prev) {
-                    downloadStat = Double.toString((current/(maxSize*1.0))*100);
-                    try{
-                        downloadStat = downloadStat.substring(0, downloadStat.indexOf('.')+3);
-                    } catch (Exception e){
-                        downloadStat = downloadStat.substring(0, downloadStat.indexOf('.')+2);
+            final String[] downloadStat = {""};
+            long finalMaxSize = maxSize;
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while (current[0] < finalMaxSize && !failedProcess) {
+                        current[0] = file.length();
+                        if (current[0] != prev[0]) {
+                            downloadStat[0] = Double.toString((current[0] / (finalMaxSize * 1.0)) * 100);
+                            try {
+                                downloadStat[0] = downloadStat[0].substring(0, downloadStat[0].indexOf('.') + 3);
+                            } catch (Exception e) {
+                                downloadStat[0] = downloadStat[0].substring(0, downloadStat[0].indexOf('.') + 2);
+                            }
+                            System.out.println("destination file length : " + current[0] + ", download stat : " + downloadStat[0] + "%" + ", failedProcess? : " + failedProcess);
+                            prev[0] = current[0];
+                        }
                     }
-                    System.out.println("destination file length : " + current+", download stat : "+downloadStat+"%"+", failedProcess? : "+failedProcess);
-                    prev = current;
+                    if (!failedProcess) System.out.println("Download complete!!");
+                    else System.out.println("Download failed!!");
                 }
-            }
-            if(!failedProcess) System.out.println("Download complete!!");
-            else System.out.println("Download failed!!");
+            }).start();
+
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException {
         new CZ_HttpsDownloadTrial(fromFile);
     }
 }
