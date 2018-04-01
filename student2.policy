@@ -1,4 +1,0 @@
-grant codeBase "file:/home/sniperveliski/sandboxed/-" {
-    permission java.io.FilePermission "*", "read";
-    permission java.io.FilePermission "tmp/*", "read, write";
-};
