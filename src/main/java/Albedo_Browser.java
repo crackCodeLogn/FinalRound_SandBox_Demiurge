@@ -175,7 +175,7 @@ public class Albedo_Browser extends Application implements EventHandler<ActionEv
             }
         });
 
-        image = new Image(new FileInputStream("resources/RESIZED_ic_more_vert_black_48dp_2x.png"));
+        image = new Image(new FileInputStream("resources//RESIZED_ic_more_vert_black_48dp_2x.png"));
         buttonMenu = new Button();
         buttonMenu.setGraphic(new ImageView(image));
         buttonMenu.setOnAction(this);
@@ -260,7 +260,7 @@ public class Albedo_Browser extends Application implements EventHandler<ActionEv
 
                             //execute file download, as here i am considering that pdf or unsupported formats where given for download
                             //threading it out in order to keep the UI unaffected
-                            if (currentURL.endsWith(".pdf")) {
+                            if (currentURL.endsWith(".pdf") || currentURL.endsWith(".zip") || currentURL.endsWith(".rar") || currentURL.endsWith(".exe") || currentURL.endsWith(".doc") || currentURL.endsWith(".docx") || currentURL.endsWith(".odt")) {
                                 Platform.runLater(new Runnable() {
                                     @Override
                                     public void run() {
