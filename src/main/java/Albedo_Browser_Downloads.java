@@ -123,14 +123,19 @@ public class Albedo_Browser_Downloads extends Application {
                     System.out.println("Firing the file commiting ~ transferring");
                     cellButton.setDisable(true);
 
-                    try {
-                        Files.copy(srcFile.toPath(), Paths.get(downloadFileDirectory_OutBoxPath + srcFile.getName()), StandardCopyOption.REPLACE_EXISTING);
-                        srcFile.delete();
-                        System.out.println("Completed file transfer and deleted the source file!");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        System.out.println("FAILURE IN COPYING / DELETING THE FILE WHICH REQUESTED COMMIT");
-                    }
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Files.copy(srcFile.toPath(), Paths.get(downloadFileDirectory_OutBoxPath + srcFile.getName()), StandardCopyOption.REPLACE_EXISTING);
+                                srcFile.delete();
+                                System.out.println("Completed file transfer and deleted the source file!");
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                System.out.println("FAILURE IN COPYING / DELETING THE FILE WHICH REQUESTED COMMIT");
+                            }
+                        }
+                    }).start();
                 }
             });
         }
