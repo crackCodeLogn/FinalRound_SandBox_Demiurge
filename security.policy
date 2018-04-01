@@ -1,6 +1,7 @@
 grant {
       permission java.io.FilePermission "e:\\sandbox_target\\*", "read";
-      permission java.io.FilePermission "e:\\sandbox_target\\tmp\\*", "read, write";
+      permission java.io.FilePermission "e:\\sandbox_target\\tmp\\*", "read, write, delete";
+      permission java.io.FilePermission "e:\\sandbox_outbox\\*", "read, write";
       permission java.io.FilePermission "e:\\sandbox_target\\FinalRound_SandBox_Demiurge\\resources\\*", "read";
       permission java.io.FilePermission "e:\\sandbox_target\\FinalRound_SandBox_Demiurge\\*", "read";
 
