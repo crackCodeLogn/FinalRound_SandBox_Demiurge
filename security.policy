@@ -1,9 +1,12 @@
 grant {
-      permission java.io.FilePermission "e:\\sandbox_target\\*", "read";
-      permission java.io.FilePermission "e:\\sandbox_target\\tmp\\*", "read, write, delete";
-      permission java.io.FilePermission "e:\\sandbox_outbox\\*", "read, write";
-      permission java.io.FilePermission "e:\\sandbox_target\\FinalRound_SandBox_Demiurge\\resources\\*", "read";
-      permission java.io.FilePermission "e:\\sandbox_target\\FinalRound_SandBox_Demiurge\\*", "read";
+
+      permission java.io.FilePermission "/home/sniperveliski/IdeaProjects/FinalRound_Sandbox_Demiurge/*", "read";
+      permission java.io.FilePermission "/home/sniperveliski/IdeaProjects/FinalRound_Sandbox_Demiurge/resources/*", "read";
+
+      permission java.io.FilePermission "/home/sniperveliski/sandbox_target/*", "read";
+      permission java.io.FilePermission "/home/sniperveliski/sandbox_target/tmp/*", "read, write, delete";
+      permission java.io.FilePermission "/home/sniperveliski/sandbox_outbox/*", "read, write";
+      //permission java.io.FilePermission "/tmp/*", "read, write";
 
       permission java.util.PropertyPermission "*", "read, write";
       permission java.lang.RuntimePermission "getProtectionDomain";
@@ -26,6 +29,7 @@ grant {
       permission java.lang.RuntimePermission "setFactory";
       permission java.lang.RuntimePermission "setIO";
       permission java.lang.RuntimePermission "shutdownHooks";
+      permission java.lang.RuntimePermission "loadLibrary.jnidispatch";
 
       permission java.net.NetPermission "*";
       permission java.net.SocketPermission "*", "connect,accept,listen,resolve";

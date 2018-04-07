@@ -62,16 +62,18 @@ public class Albedo_Browser extends Application implements EventHandler<ActionEv
     private static String currentURL = "";
     private static String homePageURL = "https://bing.com";
 
+    private static String downloadDestinationPath = "/home/sniperveliski/sandbox_target/tmp/";
+
     @Override
     public void start(final Stage primaryStage) throws Exception {
         primaryStage.setTitle("Albedo");
-        primaryStage.getIcons().add(new Image(new FileInputStream("resources/cover_thumbnail.jpg")));
+        primaryStage.getIcons().add(new Image(new FileInputStream("resources//cover_thumbnail.jpg")));
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         //primaryStage.setWidth(screenSize.getWidth());
         //primaryStage.setHeight(screenSize.getHeight());
         primaryStage.setMaximized(true);
         textFieldStatusDisplay.setEditable(false);
-        textFieldStatusDisplay.setDisable(true);
+        //textFieldStatusDisplay.setDisable(true);
 
         if (browser == null) {
             System.out.println("initializing the engine!");
@@ -92,7 +94,7 @@ public class Albedo_Browser extends Application implements EventHandler<ActionEv
         //image = new Image(new FileInputStream("E:/IdeaProjects/FinalRound_Sandbox/back.png"));
 
         buttonBack = new Button();
-        image = new Image(new FileInputStream("resources/RESIZED_ic_arrow_back_black_48dp_2x.png"));
+        image = new Image(new FileInputStream("resources//RESIZED_ic_arrow_back_black_48dp_2x.png"));
         buttonBack.setGraphic(new ImageView(image));
         buttonBack.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -118,7 +120,7 @@ public class Albedo_Browser extends Application implements EventHandler<ActionEv
             }
         });
 
-        image = new Image(new FileInputStream("resources/RESIZED_ic_arrow_forward_black_48dp_2x.png"));
+        image = new Image(new FileInputStream("resources//RESIZED_ic_arrow_forward_black_48dp_2x.png"));
         buttonForward = new Button();
         buttonForward.setGraphic(new ImageView(image));
         buttonForward.setOnAction(new EventHandler<ActionEvent>() {
@@ -145,7 +147,7 @@ public class Albedo_Browser extends Application implements EventHandler<ActionEv
             }
         });
 
-        image = new Image(new FileInputStream("resources/RESIZED_ic_refresh_black_48dp_2x.png"));
+        image = new Image(new FileInputStream("resources//RESIZED_ic_refresh_black_48dp_2x.png"));
         buttonRefresh = new Button();
         buttonRefresh.setGraphic(new ImageView(image));
         buttonRefresh.setOnAction(new EventHandler<ActionEvent>() {
@@ -166,7 +168,7 @@ public class Albedo_Browser extends Application implements EventHandler<ActionEv
             }
         });
 
-        image = new Image(new FileInputStream("resources/RESIZED_ic_home_black_48dp_2x.png"));
+        image = new Image(new FileInputStream("resources//RESIZED_ic_home_black_48dp_2x.png"));
         buttonHome = new Button();
         buttonHome.setGraphic(new ImageView(image));
         buttonHome.setOnAction(new EventHandler<ActionEvent>() {
@@ -323,13 +325,13 @@ public class Albedo_Browser extends Application implements EventHandler<ActionEv
 
                             //execute file download, as here i am considering that pdf or unsupported formats where given for download
                             //threading it out in order to keep the UI unaffected
-                            if (currentURL.endsWith(".pdf") || currentURL.endsWith(".zip") || currentURL.endsWith(".rar") || currentURL.endsWith(".exe") || currentURL.endsWith(".doc") || currentURL.endsWith(".docx") || currentURL.endsWith(".odt")) {
+                            if (currentURL.endsWith(".pdf") || currentURL.endsWith(".zip") || currentURL.endsWith(".tar.gz") || currentURL.endsWith(".tar") || currentURL.endsWith(".gz") || currentURL.endsWith(".zip") || currentURL.endsWith(".rar") || currentURL.endsWith(".exe") || currentURL.endsWith(".doc") || currentURL.endsWith(".docx") || currentURL.endsWith(".odt")) {
                                 Platform.runLater(new Runnable() {
                                     @Override
                                     public void run() {
                                         //new CZ_HttpsDownloadTrial(currentURL);
                                         try {
-                                            new CZ_HttpsDownload(currentURL).start(new Stage());
+                                            new CZ_HttpsDownload(currentURL, downloadDestinationPath).start(new Stage());
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
@@ -485,7 +487,10 @@ public class Albedo_Browser extends Application implements EventHandler<ActionEv
 
     public static void main(String[] args) {
         //calling the security permissions setter before starting the browser
-        new Narberal_Gamma_windowsVersion();
+        new Narberal_Gamma();
+
+        //calling the file restrictor before starting the browser
+        //new FAD_Restrictor();
 
         //launching the browser now
         launch(args);

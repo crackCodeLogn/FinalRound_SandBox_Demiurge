@@ -30,14 +30,16 @@ public class CZ_HttpsDownload extends Application {
     private boolean failedProcess = false;
     private String downloadSrcFilePath = "";
     private String downloadSrcFileName = "";
+    private String downloadDestinationPath = "";
 
     private final int connectionTimeOut = 10000;
     private final int readTimeOut = 300000;
 
     public TextArea displayDownloadStatus;
 
-    public CZ_HttpsDownload(String downloadSrcFilePath) {
+    public CZ_HttpsDownload(String downloadSrcFilePath, String downloadDestinationPath) {
         this.downloadSrcFilePath = downloadSrcFilePath;
+        this.downloadDestinationPath = downloadDestinationPath;
     }
 
     @Override
@@ -74,7 +76,8 @@ public class CZ_HttpsDownload extends Application {
             contentName = downloadSrcFilePath.substring(downloadSrcFilePath.lastIndexOf('/') + 1);
             downloadSrcFileName = contentName;
             System.out.println("Destination file renamed to : " + downloadSrcFileName);
-            downloadSrcFileName = "e:\\sandbox_target\\tmp\\" + downloadSrcFileName;
+            //downloadSrcFileName = "/home/sniperveliski/sandbox_target/tmp/" + downloadSrcFileName;
+            downloadSrcFileName = downloadDestinationPath + downloadSrcFileName;
             System.out.println("Rewriting the destination file renamed to : " + downloadSrcFileName);
         }
 

@@ -1,3 +1,5 @@
+import javafx.scene.image.Image;
+
 import java.io.*;
 
 /**
@@ -5,13 +7,13 @@ import java.io.*;
  * @version 1.0
  * @since 28-03-2018
  */
-public class Narberal_Gamma_windowsVersion {
+public class Narberal_Gamma {
     private static String policyFilePath = "security.policy";
-    private static String pathway = "e:\\zzz.txt";
-    private static String pathway2 = "e:\\sandbox_target\\zzz.txt";
-    private static String pathway3 = "e:\\sandbox_target\\tmp\\zzz.txt";
+    private static String pathway = "/home/sniperveliski/zzz.txt";
+    private static String pathway2 = "/home/sniperveliski/sandbox_target/zzz.txt";
+    private static String pathway3 = "/home/sniperveliski/sandbox_target/tmp/zzz.txt";
 
-    public Narberal_Gamma_windowsVersion(){
+    public Narberal_Gamma(){
         System.setProperty("java.security.policy", policyFilePath);
 
         try {
@@ -89,6 +91,24 @@ public class Narberal_Gamma_windowsVersion {
         }
 
         try{
+            System.out.println("PASS 3.5");
+            Image image = new Image(new FileInputStream("resources/RESIZED_ic_arrow_back_black_48dp_2x.png"));
+
+            //System.out.println("File created successfully!");
+        } catch (Exception e3){
+            System.out.println("File creation failed because of the following error : ");
+            System.out.println(e3);
+            //System.out.println("Stack trace :-");
+            //e3.printStackTrace();
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        /*
+        try{
             System.out.println("PASS 4");
             Runtime.getRuntime().exec("e:\\sandbox_target\\tmp\\testspam1.sh");
         } catch (Exception e4){
@@ -97,10 +117,11 @@ public class Narberal_Gamma_windowsVersion {
             //System.out.println("Stack trace --");
             //e4.printStackTrace();
         }
+        */
     }
 
     public static void main(String[] args) throws IOException {
-        new Narberal_Gamma_windowsVersion();
+        new Narberal_Gamma();
 
         new CZ_HttpsDownloadTrial("https://s3.amazonaws.com/tm-town-nlp-resources/ch2.pdf");
         //new CZ_HttpsDownloadTrial("http://www4.ncsu.edu/~kksivara/sfwr4c03/lectures/lecture10.pdf");

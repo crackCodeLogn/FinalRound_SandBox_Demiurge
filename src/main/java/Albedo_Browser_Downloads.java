@@ -157,8 +157,8 @@ public class Albedo_Browser_Downloads extends Application {
     static Map<Integer, File> fileLocationMapper = new HashMap<>();
     static Map<Button, Integer> buttonMapper = new HashMap<>();
 
-    private static String downloadFileDirectoryPath = "e:\\sandbox_target\\tmp\\";
-    private static String downloadFileDirectory_OutBoxPath = "e:\\sandbox_outbox\\";
+    private static String downloadFileDirectoryPath = "/home/sniperveliski/sandbox_target/tmp/";
+    private static String downloadFileDirectory_OutBoxPath = "/home/sniperveliski/sandbox_outbox/";
 
     public static void fillData() {
 
@@ -280,12 +280,16 @@ public class Albedo_Browser_Downloads extends Application {
 
         table.getColumns().addAll(recordNumberCol, siteNameCol, lastVisitedTimeCol, commitButtonCol);
 
-        Collections.sort(data, new Comparator<DownloadRecord>() {
-            @Override
-            public int compare(DownloadRecord o1, DownloadRecord o2) {
-                return (int) (o2.getDownloadTimeStampLong() - o1.getDownloadTimeStampLong());
-            }
-        });
+        try {
+            Collections.sort(data, new Comparator<DownloadRecord>() {
+                @Override
+                public int compare(DownloadRecord o1, DownloadRecord o2) {
+                    return (int) (o2.getDownloadTimeStampLong() - o1.getDownloadTimeStampLong());
+                }
+            });
+        } catch (Exception e1){
+            System.out.println("Nothing in the downloads list...");
+        }
 
         int tr = data.size();
         for (DownloadRecord record : data) {
