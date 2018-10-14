@@ -1,13 +1,14 @@
 grant {
 
       permission java.io.FilePermission "/home/sniperveliski/IdeaProjects/FinalRound_Sandbox_Demiurge/*", "read";
-      permission java.io.FilePermission "/home/sniperveliski/IdeaProjects/FinalRound_Sandbox_Demiurge/resources/*", "read";
+      permission java.io.FilePermission "/home/sniperveliski/IdeaProjects/FinalRound_Sandbox_Demiurge/src/main/resources/*", "read";
 
       permission java.io.FilePermission "/home/sniperveliski/sandbox_target/*", "read";
       permission java.io.FilePermission "/home/sniperveliski/sandbox_target/tmp/*", "read, write, delete";
       permission java.io.FilePermission "/home/sniperveliski/sandbox_outbox/*", "read, write";
       //permission java.io.FilePermission "/tmp/*", "read, write";
 
+      permission java.awt.AWTPermission "accessClipboard";
       permission java.util.PropertyPermission "*", "read, write";
       permission java.lang.RuntimePermission "getProtectionDomain";
       permission java.io.SerializablePermission "enableSubstitution";

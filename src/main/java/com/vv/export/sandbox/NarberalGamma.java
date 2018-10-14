@@ -1,3 +1,5 @@
+package com.vv.export.sandbox;
+
 import javafx.scene.image.Image;
 
 import java.io.*;
@@ -7,13 +9,13 @@ import java.io.*;
  * @version 1.0
  * @since 28-03-2018
  */
-public class Narberal_Gamma {
+public class NarberalGamma {
     private static String policyFilePath = "security.policy";
     private static String pathway = "/home/sniperveliski/zzz.txt";
     private static String pathway2 = "/home/sniperveliski/sandbox_target/zzz.txt";
     private static String pathway3 = "/home/sniperveliski/sandbox_target/tmp/zzz.txt";
 
-    public Narberal_Gamma(){
+    public NarberalGamma() {
         System.setProperty("java.security.policy", policyFilePath);
 
         try {
@@ -121,9 +123,9 @@ public class Narberal_Gamma {
     }
 
     public static void main(String[] args) throws IOException {
-        new Narberal_Gamma();
+        new NarberalGamma();
 
         new CZ_HttpsDownloadTrial("https://s3.amazonaws.com/tm-town-nlp-resources/ch2.pdf");
-        //new CZ_HttpsDownloadTrial("http://www4.ncsu.edu/~kksivara/sfwr4c03/lectures/lecture10.pdf");
+        //new com.vv.export.sandbox.CZ_HttpsDownloadTrial("http://www4.ncsu.edu/~kksivara/sfwr4c03/lectures/lecture10.pdf");
     }
 }

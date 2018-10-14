@@ -1,16 +1,11 @@
-import com.sun.javafx.application.PlatformImpl;
+package com.vv.export.sandbox;
+
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.Scene;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import org.apache.commons.io.FileUtils;
 
@@ -76,7 +71,6 @@ public class CZ_HttpsDownload extends Application {
             contentName = downloadSrcFilePath.substring(downloadSrcFilePath.lastIndexOf('/') + 1);
             downloadSrcFileName = contentName;
             System.out.println("Destination file renamed to : " + downloadSrcFileName);
-            //downloadSrcFileName = "/home/sniperveliski/sandbox_target/tmp/" + downloadSrcFileName;
             downloadSrcFileName = downloadDestinationPath + downloadSrcFileName;
             System.out.println("Rewriting the destination file renamed to : " + downloadSrcFileName);
         }

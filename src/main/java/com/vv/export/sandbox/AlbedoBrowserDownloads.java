@@ -1,3 +1,5 @@
+package com.vv.export.sandbox;
+
 import javafx.application.Application;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
@@ -23,7 +25,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
@@ -36,7 +37,7 @@ import java.util.Map;
  * @version 1.0
  * @since 30-03-2018
  */
-public class Albedo_Browser_Downloads extends Application {
+public class AlbedoBrowserDownloads extends Application {
 
     public static class DownloadRecord {
         int number;
@@ -305,7 +306,7 @@ public class Albedo_Browser_Downloads extends Application {
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle(WindowEvent we) {
                 System.out.println("Stage is closing");
-                Albedo_Browser.downloadsFrameOpen = false;
+                AlbedoBrowser.downloadsFrameOpen = false;
             }
         });
     }

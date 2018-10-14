@@ -1,3 +1,5 @@
+package com.vv.export.sandbox;
+
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,7 +20,7 @@ import javafx.stage.WindowEvent;
  * @version 1.0
  * @since 29-03-2018
  */
-public class Albedo_Browser_History extends Application {
+public class AlbedoBrowserHistory extends Application {
 
     public static class HistoryRecord {
         int number;
@@ -121,7 +123,7 @@ public class Albedo_Browser_History extends Application {
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle(WindowEvent we) {
                 System.out.println("Stage is closing");
-                Albedo_Browser.historyFrameOpen = false;
+                AlbedoBrowser.historyFrameOpen = false;
             }
         });
     }
