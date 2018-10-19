@@ -4,6 +4,8 @@ import javafx.scene.image.Image;
 
 import java.io.*;
 
+import static com.vv.export.sandbox.Utility.BASE_FILEPATH;
+
 /**
  * @author Vivek
  * @version 1.0
@@ -16,12 +18,12 @@ public class NarberalGamma {
     private static String pathway3 = "/home/sniperveliski/sandbox_target/tmp/zzz.txt";
 
     public NarberalGamma() {
-        System.setProperty("java.security.policy", policyFilePath);
+        System.setProperty("java.security.policy", BASE_FILEPATH + policyFilePath);
 
         try {
-            BufferedReader in = new BufferedReader(new FileReader(new File(policyFilePath)));
+            BufferedReader in = new BufferedReader(new FileReader(new File(BASE_FILEPATH + policyFilePath)));
             String intermed = "";
-            while((intermed = in.readLine())!=null){
+            while ((intermed = in.readLine()) != null) {
                 System.out.println(intermed);
             }
             in.close();
@@ -52,7 +54,7 @@ public class NarberalGamma {
             }
         }
 
-        try{
+        try {
             System.out.println("PASS 2");
             PrintWriter pw = new PrintWriter(new FileWriter(new File(pathway2)));
             pw.write("23321415315353516136 - from IntelliJ Process\n");
@@ -60,7 +62,7 @@ public class NarberalGamma {
             pw.close();
 
             System.out.println("File created successfully!");
-        } catch (Exception e2){
+        } catch (Exception e2) {
             System.out.println("File creation failed because of the following error : ");
             System.out.println(e2);
             //System.out.println("Stack trace :-");
@@ -72,7 +74,7 @@ public class NarberalGamma {
             }
         }
 
-        try{
+        try {
             System.out.println("PASS 3");
             PrintWriter pw = new PrintWriter(new FileWriter(new File(pathway3)));
             pw.write("23321415315353516136 - from IntelliJ Process\n");
@@ -80,7 +82,7 @@ public class NarberalGamma {
             pw.close();
 
             System.out.println("File created successfully!");
-        } catch (Exception e3){
+        } catch (Exception e3) {
             System.out.println("File creation failed because of the following error : ");
             System.out.println(e3);
             //System.out.println("Stack trace :-");
@@ -92,12 +94,12 @@ public class NarberalGamma {
             }
         }
 
-        try{
+        try {
             System.out.println("PASS 3.5");
             Image image = new Image(new FileInputStream("resources/RESIZED_ic_arrow_back_black_48dp_2x.png"));
 
             //System.out.println("File created successfully!");
-        } catch (Exception e3){
+        } catch (Exception e3) {
             System.out.println("File creation failed because of the following error : ");
             System.out.println(e3);
             //System.out.println("Stack trace :-");

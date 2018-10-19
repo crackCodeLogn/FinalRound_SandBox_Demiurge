@@ -31,6 +31,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 import static com.vv.export.sandbox.Utility.*;
@@ -61,14 +64,29 @@ public class AlbedoBrowser extends Application implements EventHandler<ActionEve
     private Button buttonAbort;
     private Button buttonMenu;
 
+    private static List<String> downloadFormats = new ArrayList<>();
+    private static List<String> siteExtensions = new ArrayList<>();
+
     protected static void setUpProps() {
-        try (FileReader fileReader = new FileReader(FILEPATH_PROPERTIES)) {
+        try (FileReader fileReader = new FileReader(BASE_FILEPATH + FILEPATH_PROPERTIES)) {
             props.load(fileReader);
         } catch (FileNotFoundException e) {
             System.out.println("FNF exception encountered!");
         } catch (IOException e) {
             System.out.println("Error while reading the properties file. Error : " + e);
         }
+
+        String formats[] = getProperty(DOWNLOAD_FORMATS, "").split(",");
+        for (int i = 0; i < formats.length; i++) {
+            formats[i] = String.format(FORMAT_STRING_EXTENSION, formats[i]).trim();
+        }
+        downloadFormats = Arrays.asList(formats);
+
+        formats = getProperty(HTTP_SITE_EXTENSIONS, "").split(",");
+        for (int i = 0; i < formats.length; i++) {
+            formats[i] = String.format(FORMAT_STRING_EXTENSION, formats[i]).trim();
+        }
+        siteExtensions = Arrays.asList(formats);
     }
 
     protected static String getProperty(String key, String def) {
@@ -87,6 +105,10 @@ public class AlbedoBrowser extends Application implements EventHandler<ActionEve
         }
     }
 
+    protected String getActualImagePath(String image) {
+        return String.format(FORMAT_STRING_IMG_PATH, BASE_FILEPATH, image);
+    }
+
     public static void main(String[] args) {
         setUpProps();
         //calling the security permissions setter before starting the browser
@@ -101,7 +123,7 @@ public class AlbedoBrowser extends Application implements EventHandler<ActionEve
 
     protected Image getImage(String imageFilePath) {
         try {
-            return new Image(new FileInputStream(imageFilePath));
+            return new Image(new FileInputStream(getActualImagePath(imageFilePath)));
         } catch (FileNotFoundException e) {
             System.out.println("Image not found at : " + imageFilePath + ", error : " + e);
         }
@@ -136,6 +158,24 @@ public class AlbedoBrowser extends Application implements EventHandler<ActionEve
         buttonMenu = setImageButton(image);
     }
 
+    protected boolean httpToBePrefixed(String data) {
+        for (String extension : siteExtensions) {
+            if (data.contains(extension)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected boolean toBeDownloaded(String data) {
+        for (String extension : downloadFormats) {
+            if (data.endsWith(extension)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     protected void textFieldControllerOnKeyPressed(TextField textField) {
         textField.setOnKeyPressed(event -> {
             if (event.isControlDown() && !event.getCharacter().equals("v") && event.getCode() == KeyCode.V) {
@@ -146,9 +186,9 @@ public class AlbedoBrowser extends Application implements EventHandler<ActionEve
                     Object text;
                     try {
                         text = clipboard.getData(dataFlavor);
-                        System.out.println("The date from the sys clipboard : " + (String) text);
+                        System.out.println("The date from the sys clipboard : " + text);
                     } catch (UnsupportedFlavorException | IOException e1) {
-                        System.out.println("Error occured whilst getting the data from the clipboard. Error : " + event);
+                        System.out.println("Error occurred whilst getting the data from the clipboard. Error : " + event);
                     }
                 }
             }
@@ -162,13 +202,14 @@ public class AlbedoBrowser extends Application implements EventHandler<ActionEve
 
             if (textFromBar.startsWith(HTTP_URL_PART) || textFromBar.startsWith(HTTPS_URL_PART))
                 finalURL = textFromBar;
-            else if (textFromBar.contains(".com") || textFromBar.contains(".co.in") || textFromBar.contains(".in") || textFromBar.contains(".ca") || textFromBar.contains(".ru")) {
+                //else if (textFromBar.contains(".com") || textFromBar.contains(".co.in") || textFromBar.contains(".in") || textFromBar.contains(".ca") || textFromBar.contains(".ru")) {
+            else if (httpToBePrefixed(textFromBar)) {
                 if (textFromBar.startsWith(WWW))
-                    finalURL = String.format("%s%s", HTTP_URL_PART, textFromBar);
+                    finalURL = String.format(FORMAT_STRING_HTTP_WITHOUT_WWW, HTTP_URL_PART, textFromBar);
                 else
-                    finalURL = String.format("%s%s.%s", HTTP_URL_PART, WWW, textFromBar);
+                    finalURL = String.format(FORMAT_STRING_HTTP_WITH_WWWW, HTTP_URL_PART, WWW, textFromBar);
             } else { //it means that the entered item is to be searched
-                finalURL = String.format("%s/search?q=%s", getProperty(HOME_PAGE_URL, DEFAULT_HOME_PAGE_URL), textFromBar);
+                finalURL = String.format(FORMAT_STRING_SEARCH_WEB, getProperty(HOME_PAGE_URL, DEFAULT_HOME_PAGE_URL), textFromBar);
             }
 
             String finalURL1 = finalURL;
@@ -205,7 +246,7 @@ public class AlbedoBrowser extends Application implements EventHandler<ActionEve
                     }
                     if (newState == State.SCHEDULED) {
                         textFieldStatusDisplay.setText(SCHEDULED);
-                        if (currentURL.endsWith(".mp3")) {
+                        if (currentURL.endsWith(".mp3") || currentURL.endsWith(".txt")) {
                             try {
                                 new CZ_HttpDownload(currentURL, getProperty(DOWNLOAD_DESTINATION_PATH, DEFAULT_DOWNLOAD_DEST_PATH)).start(new Stage());
                             } catch (Exception e) {
@@ -251,7 +292,8 @@ public class AlbedoBrowser extends Application implements EventHandler<ActionEve
                         //execute file download, as here i am considering that pdf or unsupported formats where given for download
                         //threading it out in order to keep the UI unaffected
 
-                        if (currentURL.endsWith(".pdf") || currentURL.endsWith("PDF") || currentURL.endsWith(".zip") || currentURL.endsWith(".tar.gz") || currentURL.endsWith(".tar") || currentURL.endsWith(".gz") || currentURL.endsWith(".rar") || currentURL.endsWith(".exe") || currentURL.endsWith(".doc") || currentURL.endsWith(".docx") || currentURL.endsWith(".odt") || currentURL.endsWith(".txt") || currentURL.endsWith(".mp3") || currentURL.endsWith(".wma")) {
+                        //if (currentURL.endsWith(".pdf") || currentURL.endsWith(".PDF") || currentURL.endsWith(".zip") || currentURL.endsWith(".tar.gz") || currentURL.endsWith(".tar") || currentURL.endsWith(".gz") || currentURL.endsWith(".rar") || currentURL.endsWith(".exe") || currentURL.endsWith(".doc") || currentURL.endsWith(".docx") || currentURL.endsWith(".odt") || currentURL.endsWith(".txt") || currentURL.endsWith(".mp3") || currentURL.endsWith(".wma")) {
+                        if (toBeDownloaded(currentURL)) {
                             Platform.runLater(() -> {
                                 //new com.vv.export.sandbox.CZ_HttpsDownloadTrial(currentURL);
                                 try {
@@ -276,7 +318,7 @@ public class AlbedoBrowser extends Application implements EventHandler<ActionEve
     @Override
     public void start(final Stage primaryStage) throws Exception {
         primaryStage.setTitle(BROWSER_TITLE);
-        primaryStage.getIcons().add(new Image(new FileInputStream(RES_COVER_THUMBNAIL)));
+        primaryStage.getIcons().add(new Image(new FileInputStream(getActualImagePath(RES_COVER_THUMBNAIL))));
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         primaryStage.setMaximized(true);
         textFieldStatusDisplay.setEditable(false);
@@ -334,12 +376,19 @@ public class AlbedoBrowser extends Application implements EventHandler<ActionEve
         final WebHistory history = webEngine.getHistory();
         ObservableList<WebHistory.Entry> entryList = history.getEntries();
         int currentIndex = history.getCurrentIndex();
+        //System.out.println("From the back press button! curent index : "+currentIndex);
+        //System.out.println("entryList : "+entryList);
 
-        Platform.runLater(() ->
+        Platform.runLater(() -> {
+            try {
                 history.go(entryList.size() > 1
-                        && currentIndex < entryList.size() - 1
+                        && currentIndex < entryList.size()
                         ? choice
-                        : 0));
+                        : 0);
+            } catch (Exception e) {
+                System.out.println("Lower or upper bound hit. Error : " + e);
+            }
+        });
     }
 
     @Override

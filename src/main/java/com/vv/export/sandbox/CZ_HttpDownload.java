@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 
+import static com.vv.export.sandbox.AlbedoBrowser.getProperty;
+import static com.vv.export.sandbox.Utility.DOWNLOAD_TIMEOUT_UPPER;
+
 public class CZ_HttpDownload extends Application {
     private final int connectionTimeOut = 10000;
     private final int readTimeOut = 300000;
@@ -124,7 +127,7 @@ public class CZ_HttpDownload extends Application {
                     protected String call() throws Exception {
 
                         if (finalMaxSize == -1) {
-                            int timeOutBase = 75, timeOutLocal = timeOutBase, upperTimeOut = 201;
+                            int timeOutBase = 75, timeOutLocal = timeOutBase, upperTimeOut = Integer.parseInt(getProperty(DOWNLOAD_TIMEOUT_UPPER, String.valueOf(201)));
                             System.out.println("Entering un-chartered territory in the downloading space!");
                             while (!failedProcess) {
                                 current[0] = file.length();
