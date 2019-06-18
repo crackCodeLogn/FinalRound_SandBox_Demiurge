@@ -1,5 +1,6 @@
-package com.vv.export.sandbox;
+package com.vv.export.sandbox.security.enforcer;
 
+import com.vv.export.sandbox.downloader.CZ_HttpsDownloadTrial;
 import javafx.scene.image.Image;
 
 import java.io.*;
@@ -19,7 +20,7 @@ public class NarberalGamma {
     private final String pathway2 = "/home/v2k/theRange/sandbox_target/zzz.txt";
     private final String pathway3 = "/home/v2k/theRange/sandbox_target/tmp/zzz.txt";
 
-    NarberalGamma() {
+    public NarberalGamma() {
         final boolean launchInSandboxedMode = Boolean.valueOf(System.getProperty("launchInSandboxedMode"));
         System.out.println("launch in sandboxed mode? : " + launchInSandboxedMode);
         if (launchInSandboxedMode) {
@@ -115,6 +116,6 @@ public class NarberalGamma {
         new NarberalGamma();
 
         new CZ_HttpsDownloadTrial("https://s3.amazonaws.com/tm-town-nlp-resources/ch2.pdf");
-        //new com.vv.export.sandbox.CZ_HttpsDownloadTrial("http://www4.ncsu.edu/~kksivara/sfwr4c03/lectures/lecture10.pdf");
+        //new com.vv.export.sandbox.downloader.CZ_HttpsDownloadTrial("http://www4.ncsu.edu/~kksivara/sfwr4c03/lectures/lecture10.pdf");
     }
 }

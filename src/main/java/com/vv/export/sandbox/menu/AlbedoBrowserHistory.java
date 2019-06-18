@@ -1,5 +1,6 @@
-package com.vv.export.sandbox;
+package com.vv.export.sandbox.menu;
 
+import com.vv.export.sandbox.AlbedoBrowser;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

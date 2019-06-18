@@ -1,5 +1,10 @@
 package com.vv.export.sandbox;
 
+import com.vv.export.sandbox.downloader.CZ_HttpDownload;
+import com.vv.export.sandbox.downloader.CZ_HttpsDownload;
+import com.vv.export.sandbox.menu.AlbedoBrowserDownloads;
+import com.vv.export.sandbox.menu.AlbedoBrowserHistory;
+import com.vv.export.sandbox.security.enforcer.NarberalGamma;
 import com.vv.export.sandbox.util.Helper;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -50,8 +55,8 @@ import static com.vv.export.sandbox.util.Utility.*;
  */
 public class AlbedoBrowser extends Application implements EventHandler<ActionEvent> {
 
-    static boolean historyFrameOpen = false;
-    static boolean downloadsFrameOpen = false;
+    public static boolean historyFrameOpen = false;
+    public static boolean downloadsFrameOpen = false;
     private static boolean menuFrameOpen = false;
     private WebView browser;
     private WebEngine webEngine;
@@ -86,7 +91,7 @@ public class AlbedoBrowser extends Application implements EventHandler<ActionEve
         primaryStage.getIcons().add(new Image(new FileInputStream(getActualImagePath(RES_COVER_THUMBNAIL))));
         final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         primaryStage.setMaximized(true);
-        textFieldStatusDisplay = new TextField("---");
+        textFieldStatusDisplay = new TextField(IDLE_BROWSER);
         textFieldStatusDisplay.setEditable(false);
 
         if (Objects.isNull(browser)) {
@@ -432,7 +437,7 @@ public class AlbedoBrowser extends Application implements EventHandler<ActionEve
                             //if (currentURL.endsWith(".pdf") || currentURL.endsWith(".PDF") || currentURL.endsWith(".zip") || currentURL.endsWith(".tar.gz") || currentURL.endsWith(".tar") || currentURL.endsWith(".gz") || currentURL.endsWith(".rar") || currentURL.endsWith(".exe") || currentURL.endsWith(".doc") || currentURL.endsWith(".docx") || currentURL.endsWith(".odt") || currentURL.endsWith(".txt") || currentURL.endsWith(".mp3") || currentURL.endsWith(".wma")) {
                             if (toBeDownloaded(currentURL)) {
                                 Platform.runLater(() -> {
-                                    //new com.vv.export.sandbox.CZ_HttpsDownloadTrial(currentURL);
+                                    //new com.vv.export.sandbox.downloader.CZ_HttpsDownloadTrial(currentURL);
                                     try {
                                         if (currentURL.startsWith(HTTPS_URL_PART))
                                             new CZ_HttpsDownload(currentURL, getProperty(DOWNLOAD_DESTINATION_PATH, DEFAULT_DOWNLOAD_DEST_PATH)).start(new Stage());

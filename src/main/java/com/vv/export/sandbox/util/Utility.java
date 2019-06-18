@@ -47,6 +47,7 @@ public class Utility {
     public final static String RES_CLOSE = "src//main//resources//RESIZED_ic_close_black_48dp_2x.png";
     public final static String RES_MORE_VERT = "src//main//resources//RESIZED_ic_more_vert_black_48dp_2x.png";
 
+    public final static String IDLE_BROWSER = "---";
     private final static String READY = "READY";
     private final static String SCHEDULED = "SCHEDULED";
     private final static String RUNNING = "RUNNING";
