@@ -1,6 +1,7 @@
 package com.vv.export.sandbox.menu;
 
 import com.vv.export.sandbox.AlbedoBrowser;
+import com.vv.export.sandbox.menu.core.DownloadRecord;
 import javafx.application.Application;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
@@ -149,41 +150,6 @@ public class AlbedoBrowserDownloads extends Application {
             System.out.println("Stage is closing");
             AlbedoBrowser.downloadsFrameOpen = false;
         });
-    }
-
-    static class DownloadRecord {
-        int number;
-        String title;
-        String downloadTimeStamp;
-        long downloadTimeStampLong;
-        boolean commitStatus;
-
-        DownloadRecord() {
-        }
-
-        void setNumber(int number) {
-            this.number = number;
-        }
-
-        void setTitle(String title) {
-            this.title = title;
-        }
-
-        void setDownloadTimeStamp(String downloadTimeStamp) {
-            this.downloadTimeStamp = downloadTimeStamp;
-        }
-
-        void setCommitStatus(boolean commitStatus) {
-            this.commitStatus = commitStatus;
-        }
-
-        long getDownloadTimeStampLong() {
-            return downloadTimeStampLong;
-        }
-
-        void setDownloadTimeStampLong(long downloadTimeStampLong) {
-            this.downloadTimeStampLong = downloadTimeStampLong;
-        }
     }
 
     private class ButtonCell extends TableCell<DownloadRecord, Boolean> {

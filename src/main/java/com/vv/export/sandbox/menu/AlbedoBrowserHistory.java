@@ -1,6 +1,7 @@
 package com.vv.export.sandbox.menu;
 
 import com.vv.export.sandbox.AlbedoBrowser;
+import com.vv.export.sandbox.menu.core.HistoryRecord;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -84,27 +85,6 @@ public class AlbedoBrowserHistory extends Application {
             System.out.println("Stage is closing");
             AlbedoBrowser.historyFrameOpen = false;
         });
-    }
-
-    public static class HistoryRecord {
-        int number;
-        String title;
-        String visitTimeStamp;
-
-        HistoryRecord() {
-        }
-
-        void setNumber(int number) {
-            this.number = number;
-        }
-
-        void setTitle(String title) {
-            this.title = title;
-        }
-
-        void setVisitTimeStamp(String visitTimeStamp) {
-            this.visitTimeStamp = visitTimeStamp;
-        }
     }
 
     public static void main(String[] args) {
