@@ -1,5 +1,8 @@
 package com.vv.export.sandbox.util;
 
+import com.google.common.collect.ImmutableMap;
+import javafx.concurrent.Worker;
+
 /**
  * @author Vivek
  * @since 14-10-2018
@@ -44,12 +47,21 @@ public class Utility {
     public final static String RES_CLOSE = "src//main//resources//RESIZED_ic_close_black_48dp_2x.png";
     public final static String RES_MORE_VERT = "src//main//resources//RESIZED_ic_more_vert_black_48dp_2x.png";
 
-    public final static String READY = "READY";
-    public final static String SCHEDULED = "SCHEDULED";
-    public final static String RUNNING = "RUNNING";
-    public final static String FAILED = "FAILED";
-    public final static String SUCCEEDED = "SUCCEEDED";
-    public final static String CANCELLED = "CANCELLED";
+    private final static String READY = "READY";
+    private final static String SCHEDULED = "SCHEDULED";
+    private final static String RUNNING = "RUNNING";
+    private final static String FAILED = "FAILED";
+    private final static String SUCCEEDED = "SUCCEEDED";
+    private final static String CANCELLED = "CANCELLED";
+
+    public static final ImmutableMap<Worker.State, String> browserStateToStringMap = ImmutableMap.<Worker.State, String>builder()
+            .put(Worker.State.READY, READY)
+            .put(Worker.State.SCHEDULED, SCHEDULED)
+            .put(Worker.State.RUNNING, RUNNING)
+            .put(Worker.State.FAILED, FAILED)
+            .put(Worker.State.SUCCEEDED, SUCCEEDED)
+            .put(Worker.State.CANCELLED, CANCELLED)
+            .build();
 
     public final static int HEIGHT_OF_TEXT_FIELD_CONTROLLER = 1000;
     public final static int WIDTH_MENU_WINDOW = 250;
