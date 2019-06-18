@@ -153,7 +153,7 @@ public class CZ_HttpsDownload extends Application {
                                     displayData = local + displayData;
                                 }
 
-                                updateValue(String.valueOf(displayData));
+                                updateValue(displayData);
                                 prev[0] = current[0];
                             }
                         }

@@ -4,36 +4,44 @@ import javafx.scene.image.Image;
 
 import java.io.*;
 
-import static com.vv.export.sandbox.Utility.BASE_FILEPATH;
+import static com.vv.export.sandbox.util.Utility.BASE_FILEPATH;
 
 /**
  * @author Vivek
  * @version 1.0
  * @since 28-03-2018
+ * <p>
+ * Sets the security policy, and then runs simulations testing the security policies
  */
 public class NarberalGamma {
-    private static String policyFilePath = "security.policy";
-    private static String pathway = "/home/sniperveliski/zzz.txt";
-    private static String pathway2 = "/home/sniperveliski/sandbox_target/zzz.txt";
-    private static String pathway3 = "/home/sniperveliski/sandbox_target/tmp/zzz.txt";
+    private final String policyFilePath = "security.policy";
+    private final String pathway = "/home/v2k/theRange/zzz.txt";
+    private final String pathway2 = "/home/v2k/theRange/sandbox_target/zzz.txt";
+    private final String pathway3 = "/home/v2k/theRange/sandbox_target/tmp/zzz.txt";
 
-    public NarberalGamma() {
-        System.setProperty("java.security.policy", BASE_FILEPATH + policyFilePath);
+    NarberalGamma() {
+        final boolean launchInSandboxedMode = Boolean.valueOf(System.getProperty("launchInSandboxedMode"));
+        System.out.println("launch in sandboxed mode? : " + launchInSandboxedMode);
+        if (launchInSandboxedMode) {
+            System.setProperty("java.security.policy", BASE_FILEPATH + policyFilePath);
 
-        try {
-            BufferedReader in = new BufferedReader(new FileReader(new File(BASE_FILEPATH + policyFilePath)));
-            String intermed = "";
-            while ((intermed = in.readLine()) != null) {
-                System.out.println(intermed);
+            try (BufferedReader in = new BufferedReader(new FileReader(new File(BASE_FILEPATH + policyFilePath)))) {
+                String intermed;
+                while ((intermed = in.readLine()) != null) System.out.println(intermed);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+
+            System.out.println("java.security.policy=" + System.getProperty("java.security.policy"));
+            System.setSecurityManager(new SecurityManager());
+
+            runSimulations();
+        } else {
+            System.out.println("Bypassing sandboxed mode...");
         }
+    }
 
-        System.out.println("java.security.policy=" + System.getProperty("java.security.policy"));
-        System.setSecurityManager(new SecurityManager());
-
+    private void runSimulations() {
         try {
             System.out.println("PASS 1");
             PrintWriter pw = new PrintWriter(new FileWriter(new File(pathway)));
@@ -45,8 +53,6 @@ public class NarberalGamma {
         } catch (Exception e1) {
             System.out.println("File creation failed because of the following error : ");
             System.out.println(e1);
-            //System.out.println("Stack trace :-");
-            //e1.printStackTrace();
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -65,8 +71,6 @@ public class NarberalGamma {
         } catch (Exception e2) {
             System.out.println("File creation failed because of the following error : ");
             System.out.println(e2);
-            //System.out.println("Stack trace :-");
-            //e2.printStackTrace();
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -85,8 +89,6 @@ public class NarberalGamma {
         } catch (Exception e3) {
             System.out.println("File creation failed because of the following error : ");
             System.out.println(e3);
-            //System.out.println("Stack trace :-");
-            //e3.printStackTrace();
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -96,32 +98,17 @@ public class NarberalGamma {
 
         try {
             System.out.println("PASS 3.5");
-            Image image = new Image(new FileInputStream("resources/RESIZED_ic_arrow_back_black_48dp_2x.png"));
-
-            //System.out.println("File created successfully!");
+            new Image(new FileInputStream("src/main/resources/RESIZED_ic_arrow_back_black_48dp_2x.png"));
+            System.out.println("Pass 3.5 passed!");
         } catch (Exception e3) {
-            System.out.println("File creation failed because of the following error : ");
+            System.out.println("File creation for pass 3.5 failed because of the following error : ");
             System.out.println(e3);
-            //System.out.println("Stack trace :-");
-            //e3.printStackTrace();
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-
-        /*
-        try{
-            System.out.println("PASS 4");
-            Runtime.getRuntime().exec("e:\\sandbox_target\\tmp\\testspam1.sh");
-        } catch (Exception e4){
-            System.out.println("Script exection suspended, due to lack of privilege. Error : ");
-            System.out.println(e4);
-            //System.out.println("Stack trace --");
-            //e4.printStackTrace();
-        }
-        */
     }
 
     public static void main(String[] args) throws IOException {

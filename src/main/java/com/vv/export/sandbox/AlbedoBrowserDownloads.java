@@ -158,8 +158,8 @@ public class AlbedoBrowserDownloads extends Application {
     static Map<Integer, File> fileLocationMapper = new HashMap<>();
     static Map<Button, Integer> buttonMapper = new HashMap<>();
 
-    private static String downloadFileDirectoryPath = "/home/sniperveliski/sandbox_target/tmp/";
-    private static String downloadFileDirectory_OutBoxPath = "/home/sniperveliski/sandbox_outbox/";
+    private static String downloadFileDirectoryPath = "/home/v2k/theRange/sandbox_target/tmp/";
+    private static String downloadFileDirectory_OutBoxPath = "/home/v2k/theRange/sandbox_outbox/";
 
     public static void fillData() {
 
@@ -169,7 +169,7 @@ public class AlbedoBrowserDownloads extends Application {
         localCounter = -2;
 
         File file = new File(downloadFileDirectoryPath);
-        File filesList[] = file.listFiles();
+        File[] filesList = file.listFiles();
 
         for (File f1 : filesList) {
             System.out.println("File name --> " + f1);
@@ -203,30 +203,12 @@ public class AlbedoBrowserDownloads extends Application {
 
             tr++;
         }
-
-        /*
-        DownloadRecord node = new DownloadRecord();
-        node.setNumber(1);
-        node.setTitle("first.pdf");
-        node.setDownloadTimeStamp(String.valueOf(new Timestamp(System.currentTimeMillis())));
-        node.setCommitStatus(false);
-        //localCounter++;
-
-        node = new DownloadRecord();
-        node.setNumber(2);
-        node.setTitle("second.pdf");
-        node.setDownloadTimeStamp(String.valueOf(new Timestamp(System.currentTimeMillis())));
-        node.setCommitStatus(true);
-        //localCounter++;
-
-        data.add(node);
-        */
     }
 
     public static void clearDownloads() {
         //wiping out the downloads folder
         File file = new File(downloadFileDirectoryPath);
-        File filesList[] = file.listFiles();
+        File[] filesList = file.listFiles();
 
         int i = 0;
         //File filesListArray[] = new File[filesList.length];
@@ -288,7 +270,7 @@ public class AlbedoBrowserDownloads extends Application {
                     return (int) (o2.getDownloadTimeStampLong() - o1.getDownloadTimeStampLong());
                 }
             });
-        } catch (Exception e1){
+        } catch (Exception e1) {
             System.out.println("Nothing in the downloads list...");
         }
 

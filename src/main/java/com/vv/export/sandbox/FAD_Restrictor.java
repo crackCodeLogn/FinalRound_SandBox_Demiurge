@@ -12,8 +12,8 @@ public class FAD_Restrictor {
 
     private static CLibrary libc = (CLibrary) Native.loadLibrary("c", CLibrary.class);
 
-    private static String path1 = "/home/sniperveliski/IdeaProjects/FinalRound_Sandbox_Demiurge/";
-    private static String path2 = "/home/sniperveliski/sandbox_target/tmp/";
+    private static String path1 = "/home/v2k/theRange/IdeaProjects/FinalRound_Sandbox_Demiurge/";
+    private static String path2 = "/home/v2k/theRange/sandbox_target/tmp/";
 
     public FAD_Restrictor(){
         System.out.println("Path run - FAD");
@@ -29,6 +29,6 @@ public class FAD_Restrictor {
     }
 
     interface CLibrary extends Library {
-        public int chmod(String path, int mode);
+        int chmod(String path, int mode);
     }
 }

@@ -14,21 +14,26 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 
-import static com.vv.export.sandbox.AlbedoBrowser.getProperty;
-import static com.vv.export.sandbox.Utility.DOWNLOAD_TIMEOUT_UPPER;
+import static com.vv.export.sandbox.util.Helper.getProperty;
+import static com.vv.export.sandbox.util.Utility.DOWNLOAD_TIMEOUT_UPPER;
 
 public class CZ_HttpDownload extends Application {
     private final int connectionTimeOut = 10000;
     private final int readTimeOut = 300000;
+
     public TextArea displayDownloadStatus;
-    private boolean failedProcess = false;
-    private String downloadSrcFilePath = "";
-    private String downloadSrcFileName = "";
-    private String downloadDestinationPath = "";
+
+    private boolean failedProcess;
+    private String downloadSrcFilePath;
+    private String downloadSrcFileName;
+    private String downloadDestinationPath;
 
     public CZ_HttpDownload(String downloadSrcFilePath, String downloadDestinationPath) {
         this.downloadSrcFilePath = downloadSrcFilePath;
         this.downloadDestinationPath = downloadDestinationPath;
+
+        downloadSrcFileName = "";
+        failedProcess = false;
     }
 
     @Override
@@ -136,7 +141,7 @@ public class CZ_HttpDownload extends Application {
                                     System.out.println(local + " -- timeout : " + timeOutLocal);
                                     local += "\n";
                                     displayData = local + displayData;
-                                    updateValue(String.valueOf(displayData));
+                                    updateValue(displayData);
                                     prev[0] = current[0];
                                     timeOutLocal = timeOutBase;
                                 } else {
@@ -169,7 +174,7 @@ public class CZ_HttpDownload extends Application {
                                         displayData = local + displayData;
                                     }
 
-                                    updateValue(String.valueOf(displayData));
+                                    updateValue(displayData);
                                     prev[0] = current[0];
                                 }
                             }

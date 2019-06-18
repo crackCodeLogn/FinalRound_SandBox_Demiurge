@@ -1,11 +1,11 @@
 grant {
 
-      permission java.io.FilePermission "/home/sniperveliski/IdeaProjects/FinalRound_Sandbox_Demiurge/*", "read";
-      permission java.io.FilePermission "/home/sniperveliski/IdeaProjects/FinalRound_Sandbox_Demiurge/src/main/resources/*", "read";
+      permission java.io.FilePermission "/home/v2k/theRange/IdeaProjects/FinalRound_Sandbox_Demiurge/*", "read";
+      permission java.io.FilePermission "/home/v2k/theRange/IdeaProjects/FinalRound_Sandbox_Demiurge/src/main/resources/*", "read";
 
-      permission java.io.FilePermission "/home/sniperveliski/sandbox_target/*", "read";
-      permission java.io.FilePermission "/home/sniperveliski/sandbox_target/tmp/*", "read, write, delete";
-      permission java.io.FilePermission "/home/sniperveliski/sandbox_outbox/*", "read, write";
+      permission java.io.FilePermission "/home/v2k/theRange/sandbox_target/*", "read";
+      permission java.io.FilePermission "/home/v2k/theRange/sandbox_target/tmp/*", "read, write, delete";
+      permission java.io.FilePermission "/home/v2k/theRange/sandbox_outbox/*", "read, write";
       //permission java.io.FilePermission "/tmp/*", "read, write";
 
       permission java.awt.AWTPermission "accessClipboard";
@@ -13,6 +13,9 @@ grant {
       permission java.lang.RuntimePermission "getProtectionDomain";
       permission java.io.SerializablePermission "enableSubstitution";
       permission java.lang.reflect.ReflectPermission "suppressAccessChecks";
+      permission java.lang.reflect.ReflectPermission "suppressAccessChecks";
+      permission java.lang.RuntimePermission "getStackWalkerWithClassReference";
+      permission java.lang.RuntimePermission "loadLibrary.*";
       permission java.lang.RuntimePermission "accessClassInPackage.org.apache.*";
       permission java.lang.RuntimePermission "accessClassInPackage.sun.*";
       permission java.lang.RuntimePermission "accessDeclaredMembers";

@@ -53,7 +53,7 @@ public class CZ_HttpsDownloadTrial {
                 contentName = fromFile.substring(fromFile.lastIndexOf('/') + 1);
                 toFile = contentName;
                 System.out.println("Destination file renamed to : " + toFile);
-                toFile = "/home/sniperveliski/sandbox_target/tmp/" + toFile;
+                toFile = "/home/v2k/theRange/sandbox_target/tmp/" + toFile;
                 System.out.println("Rewriting the destination file renamed to : " + toFile);
             }
 
