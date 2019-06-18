@@ -32,10 +32,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Properties;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.vv.export.sandbox.util.Helper.getProperty;
 import static com.vv.export.sandbox.util.Utility.*;
@@ -85,12 +84,12 @@ public class AlbedoBrowser extends Application implements EventHandler<ActionEve
     public void start(final Stage primaryStage) throws Exception {
         primaryStage.setTitle(BROWSER_TITLE);
         primaryStage.getIcons().add(new Image(new FileInputStream(getActualImagePath(RES_COVER_THUMBNAIL))));
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         primaryStage.setMaximized(true);
         textFieldStatusDisplay = new TextField("---");
         textFieldStatusDisplay.setEditable(false);
 
-        if (browser == null) {
+        if (Objects.isNull(browser)) {
             System.out.println("initializing the engine!");
             browser = new WebView();
             webEngine = browser.getEngine();
@@ -98,13 +97,13 @@ public class AlbedoBrowser extends Application implements EventHandler<ActionEve
             java.net.CookieHandler.setDefault(null);
         }
 
-        Scene scene = new Scene(new Group());
-        VBox root = new VBox();
-        HBox hBox = new HBox();
+        final Scene scene = new Scene(new Group());
+        final VBox root = new VBox();
+        final HBox hBox = new HBox();
 
         initializeAllButtons();
 
-        TextField textFieldController = new TextField();
+        final TextField textFieldController = new TextField();
         textFieldController.requestFocus();
         textFieldController.setMaxHeight(HEIGHT_OF_TEXT_FIELD_CONTROLLER); //random value of 1000 worked xD
         HBox.setHgrow(textFieldController, Priority.ALWAYS); //to set the length of the textfield according to the screen size
@@ -113,13 +112,13 @@ public class AlbedoBrowser extends Application implements EventHandler<ActionEve
         //The below is the controller for the url typed in the url bar
         textFieldControllerSetOnAction(textFieldController);
 
-        ProgressBar progressBar = new ProgressBar();
+        final ProgressBar progressBar = new ProgressBar();
         progressBar.progressProperty().bind(webEngine.getLoadWorker().progressProperty());
         //the above line binds the progress bar to the web engine to the loader worker
 
         hBox.getChildren().addAll(buttonBack, buttonForward, buttonRefresh, buttonHome, textFieldController, buttonAbort, buttonMenu);
 
-        HBox hBox2 = new HBox();
+        final HBox hBox2 = new HBox();
         hBox2.getChildren().addAll(progressBar, textFieldStatusDisplay);
 
         root.getChildren().addAll(hBox, hBox2, browser);
@@ -143,21 +142,13 @@ public class AlbedoBrowser extends Application implements EventHandler<ActionEve
     public void handle(ActionEvent event) {
         Object eventSrc = event.getSource();
         if (eventSrc == buttonBack) {
-            /*
-            //this approach also works
-            Platform.runLater(()->{
-                webEngine.executeScript("history.back()");
-            });
-            */
+            //Platform.runLater(() -> webEngine.executeScript("history.back()")); //this approach also works
             goBackOrForward(GO_BACK);
+
         } else if (eventSrc == buttonForward) {
-            /*
-            //this approach also works
-            Platform.runLater(()->{
-                webEngine.executeScript("history.forward()");
-            });
-            */
+            //Platform.runLater(()-> webEngine.executeScript("history.forward()")); //this approach also works
             goBackOrForward(GO_FORWARD);
+
         } else if (eventSrc == buttonRefresh) {
             System.out.println("Invoked from refresh handler -- CURRENT URL : " + currentURL);
             if (currentURL.length() > 1) {
@@ -165,24 +156,27 @@ public class AlbedoBrowser extends Application implements EventHandler<ActionEve
             } else {
                 System.out.println("Nothing to refresh!");
             }
+
         } else if (eventSrc == buttonHome) {
             System.out.println("Executing home button call");
             Platform.runLater(() -> webEngine.load(getProperty(HOME_PAGE_URL, DEFAULT_HOME_PAGE_URL)));
+
         } else if (eventSrc == buttonAbort) {
             System.out.println("CANCELLING the run of the url -- " + currentURL);
             webEngine.getLoadWorker().cancel();
+
         } else if (eventSrc == buttonMenu) {
             System.out.println("SHOUTING from button Menu");
 
             if (!menuFrameOpen) {
                 menuFrameOpen = true;
                 Platform.runLater(() -> {
-                    Stage stage = new Stage();
+                    final Stage stage = new Stage();
                     stage.setTitle(MENU_TITLE);
                     stage.setWidth(WIDTH_MENU_WINDOW);
 
-                    VBox vBox = new VBox();
-                    Button buttonHistory = new Button(HISTORY_TITLE);
+                    final VBox vBox = new VBox();
+                    final Button buttonHistory = new Button(HISTORY_TITLE);
                     buttonHistory.setMaxWidth(Double.MAX_VALUE);
                     buttonHistory.setOnAction(event1 -> {
                         System.out.println("From history button click");
@@ -203,7 +197,7 @@ public class AlbedoBrowser extends Application implements EventHandler<ActionEve
                         }
                     });
 
-                    Button buttonDownloads = new Button(DOWNLOADS_TITLE);
+                    final Button buttonDownloads = new Button(DOWNLOADS_TITLE);
                     buttonDownloads.setMaxWidth(Double.MAX_VALUE);
                     buttonDownloads.setOnAction(event12 -> {
                         System.out.println("From downloads button click");
@@ -269,13 +263,9 @@ public class AlbedoBrowser extends Application implements EventHandler<ActionEve
 
     private void printHistory(String message, WebEngine webEngine) {
         System.out.println(message);
-        WebHistory history = webEngine.getHistory();
-        ObservableList<WebHistory.Entry> list = history.getEntries();
-        int tr = 1;
-        for (WebHistory.Entry entry : list) {
-            System.out.println(String.format("Entry %d --> %s :: %s %s", tr, entry.getTitle(), entry.getUrl(), entry.getLastVisitedDate()));
-            tr++;
-        }
+        final ObservableList<WebHistory.Entry> list = webEngine.getHistory().getEntries();
+        final AtomicInteger recordNumber = new AtomicInteger(1);
+        list.forEach(entry -> System.out.println(String.format("Entry %d --> %s :: %s %s", recordNumber.getAndIncrement(), entry.getTitle(), entry.getUrl(), entry.getLastVisitedDate())));
     }
 
     private String getActualImagePath(String image) {
@@ -292,7 +282,7 @@ public class AlbedoBrowser extends Application implements EventHandler<ActionEve
     }
 
     private Button setImageButton(Image image) {
-        Button button = new Button();
+        final Button button = new Button();
         button.setGraphic(new ImageView(image));
         button.setOnAction(this);
         return button;
@@ -320,33 +310,22 @@ public class AlbedoBrowser extends Application implements EventHandler<ActionEve
     }
 
     private boolean httpToBePrefixed(String data) {
-        for (String extension : siteExtensions) {
-            if (data.contains(extension)) {
-                return true;
-            }
-        }
-        return false;
+        return siteExtensions.stream().anyMatch(data::contains);
     }
 
     private boolean toBeDownloaded(String data) {
-        for (String extension : downloadFormats) {
-            if (data.endsWith(extension)) {
-                return true;
-            }
-        }
-        return false;
+        return downloadFormats.stream().anyMatch(data::endsWith);
     }
 
     private void textFieldControllerOnKeyPressed(TextField textField) {
         textField.setOnKeyPressed(event -> {
             if (event.isControlDown() && !event.getCharacter().equals("v") && event.getCode() == KeyCode.V) {
                 System.out.println("Should be pasting now!!");
-                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                DataFlavor dataFlavor = DataFlavor.stringFlavor;
+                final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                final DataFlavor dataFlavor = DataFlavor.stringFlavor;
                 if (clipboard.isDataFlavorAvailable(dataFlavor)) {
-                    Object text;
                     try {
-                        text = clipboard.getData(dataFlavor);
+                        Object text = clipboard.getData(dataFlavor);
                         System.out.println("The date from the sys clipboard : " + text);
                     } catch (UnsupportedFlavorException | IOException e1) {
                         System.out.println("Error occurred whilst getting the data from the clipboard. Error : " + event);
@@ -358,35 +337,38 @@ public class AlbedoBrowser extends Application implements EventHandler<ActionEve
 
     private void textFieldControllerSetOnAction(TextField textFieldController) {
         textFieldController.setOnAction(e -> {
-            String textFromBar = textFieldController.getText();
-            String finalURL;
+            final String textFromBar = textFieldController.getText();
+            final String finalUrl = logicForGettingUrl(textFromBar);
 
-            if (textFromBar.startsWith(HTTP_URL_PART) || textFromBar.startsWith(HTTPS_URL_PART))
-                finalURL = textFromBar;
-                //else if (textFromBar.contains(".com") || textFromBar.contains(".co.in") || textFromBar.contains(".in") || textFromBar.contains(".ca") || textFromBar.contains(".ru")) {
-            else if (httpToBePrefixed(textFromBar)) {
-                if (textFromBar.startsWith(WWW))
-                    finalURL = String.format(FORMAT_STRING_HTTP_WITHOUT_WWW, HTTP_URL_PART, textFromBar);
-                else
-                    finalURL = String.format(FORMAT_STRING_HTTP_WITH_WWWW, HTTP_URL_PART, WWW, textFromBar);
-            } else { //it means that the entered item is to be searched
-                finalURL = String.format(FORMAT_STRING_SEARCH_WEB, getProperty(HOME_PAGE_URL, DEFAULT_HOME_PAGE_URL), textFromBar);
-            }
-
-            String finalURL1 = finalURL;
-            Platform.runLater(() -> webEngine.load(finalURL1));
-
-            System.out.println("URL loaded " + finalURL);
+            Platform.runLater(() -> webEngine.load(finalUrl));
+            System.out.println("URL loaded " + finalUrl);
             printHistory("History called from url typing", webEngine);
         });
+    }
+
+    private String logicForGettingUrl(String textFromBar) {
+        String finalURL;
+
+        if (textFromBar.startsWith(HTTP_URL_PART) || textFromBar.startsWith(HTTPS_URL_PART)) {
+            finalURL = textFromBar;
+        } else if (httpToBePrefixed(textFromBar)) {
+            if (textFromBar.startsWith(WWW))
+                finalURL = String.format(FORMAT_STRING_HTTP_WITHOUT_WWW, HTTP_URL_PART, textFromBar);
+            else
+                finalURL = String.format(FORMAT_STRING_HTTP_WITH_WWWW, HTTP_URL_PART, WWW, textFromBar);
+        } else { //it means that the entered item is to be searched
+            finalURL = String.format(FORMAT_STRING_SEARCH_WEB, getProperty(HOME_PAGE_URL, DEFAULT_HOME_PAGE_URL), textFromBar);
+        }
+
+        return finalURL;
     }
 
     private void webEngineProgressPropertyAddListener(WebEngine webEngine) {
         webEngine.getLoadWorker().progressProperty().addListener((observable, oldValue, newValue) -> {
             System.out.println("WORK DONE FROM PROGRESS LISTENER : " + webEngine.getLoadWorker().getWorkDone());
-            if (textFieldStatusDisplay.getText() != null) {
-                if (textFieldStatusDisplay.getText().contains("RUN")) {
-                    String local = String.valueOf(webEngine.getLoadWorker().getWorkDone());
+            if (Objects.nonNull(textFieldStatusDisplay.getText())) {
+                if (browserStateToStringMap.get(State.RUNNING).equals(textFieldStatusDisplay.getText())) {
+                    final String local = String.valueOf(webEngine.getLoadWorker().getWorkDone());
                     textFieldStatusDisplay.setText(String.format("RUNNING - %s%c", local.substring(0, local.indexOf('.')), '%'));
                 }
             }
@@ -402,91 +384,93 @@ public class AlbedoBrowser extends Application implements EventHandler<ActionEve
                     System.out.println("WORK DONE : " + webEngine.getLoadWorker().getWorkDone());
                     currentURL = webEngine.getLocation();
 
-                    if (newState == State.READY) {
-                        textFieldStatusDisplay.setText(READY);
-                    }
-                    if (newState == State.SCHEDULED) {
-                        textFieldStatusDisplay.setText(SCHEDULED);
-                        if (currentURL.endsWith(".mp3") || currentURL.endsWith(".txt")) {
-                            try {
-                                new CZ_HttpDownload(currentURL, getProperty(DOWNLOAD_DESTINATION_PATH, DEFAULT_DOWNLOAD_DEST_PATH)).start(new Stage());
-                            } catch (Exception e) {
-                                System.out.println("Error occured -- " + e);
-                            }
-                        }
-                    }
-                    if (newState == State.RUNNING) {
-                        textFieldStatusDisplay.setText(RUNNING);
-                        currentURL = webEngine.getLocation();
-                        String localURL = "";
-                        try {
-                            localURL = currentURL.substring(currentURL.indexOf('/') + 2);
-                        } catch (Exception e1) {
-                            System.out.println("URL substringing failed!");
-                        }
-                        textFieldController.setText(localURL);
-                    }
-                    if (newState == State.FAILED) {
-                        textFieldStatusDisplay.setText(FAILED);
-                    }
-                    if (newState == State.SUCCEEDED) {
-                        textFieldStatusDisplay.setText(SUCCEEDED);
-                        currentURL = webEngine.getLocation();
-                        String localURL = "";
-                        try {
-                            localURL = currentURL.substring(currentURL.indexOf('/') + 2);
-                        } catch (Exception e1) {
-                            System.out.println("URL substringing failed!");
-                        }
-                        textFieldController.setText(localURL);
-                        System.out.println("called INTERNAL : " + webEngine.getTitle());
+                    switch (newState) {
+                        case READY:
+                            textFieldStatusDisplay.setText(browserStateToStringMap.get(State.READY));
+                            break;
 
-                        printHistory("History called internally", webEngine);
-                        //The above usage here confirmed that the history is saved even if there is an internal page load
-                    }
-                    if (newState == State.CANCELLED) {
-                        textFieldStatusDisplay.setText(CANCELLED);
-                        System.out.println("\t\t\tCANCELLED execution");
-                        currentURL = webEngine.getLocation();
-                        System.out.println("cancelled url : " + currentURL);
-
-                        //execute file download, as here i am considering that pdf or unsupported formats where given for download
-                        //threading it out in order to keep the UI unaffected
-
-                        //if (currentURL.endsWith(".pdf") || currentURL.endsWith(".PDF") || currentURL.endsWith(".zip") || currentURL.endsWith(".tar.gz") || currentURL.endsWith(".tar") || currentURL.endsWith(".gz") || currentURL.endsWith(".rar") || currentURL.endsWith(".exe") || currentURL.endsWith(".doc") || currentURL.endsWith(".docx") || currentURL.endsWith(".odt") || currentURL.endsWith(".txt") || currentURL.endsWith(".mp3") || currentURL.endsWith(".wma")) {
-                        if (toBeDownloaded(currentURL)) {
-                            Platform.runLater(() -> {
-                                //new com.vv.export.sandbox.CZ_HttpsDownloadTrial(currentURL);
+                        case SCHEDULED:
+                            textFieldStatusDisplay.setText(browserStateToStringMap.get(State.SCHEDULED));
+                            if (currentURL.endsWith(".mp3") || currentURL.endsWith(".txt")) {
                                 try {
-                                    if (currentURL.startsWith(HTTPS_URL_PART))
-                                        new CZ_HttpsDownload(currentURL, getProperty(DOWNLOAD_DESTINATION_PATH, DEFAULT_DOWNLOAD_DEST_PATH)).start(new Stage());
-                                    else {
-                                        if (currentURL.startsWith(WWW))
-                                            currentURL = String.format("%s%s", HTTPS_URL_PART, currentURL);
-                                        new CZ_HttpDownload(currentURL, getProperty(DOWNLOAD_DESTINATION_PATH, DEFAULT_DOWNLOAD_DEST_PATH)).start(new Stage());
-                                    }
+                                    new CZ_HttpDownload(currentURL, getProperty(DOWNLOAD_DESTINATION_PATH, DEFAULT_DOWNLOAD_DEST_PATH)).start(new Stage());
                                 } catch (Exception e) {
-                                    e.printStackTrace();
+                                    System.out.println("Error occurred while attempting downloading -- " + e);
                                 }
-                            });
-                        } else {
-                            System.out.println("Else part cancelled out executed --> concerned url : " + currentURL);
-                        }
+                            }
+                            break;
+
+                        case RUNNING:
+                            textFieldStatusDisplay.setText(browserStateToStringMap.get(State.RUNNING));
+                            currentURL = webEngine.getLocation();
+                            textFieldController.setText(extractSubStringForTextFieldController(currentURL));
+                            break;
+
+                        case FAILED:
+                            textFieldStatusDisplay.setText(browserStateToStringMap.get(State.FAILED));
+                            break;
+
+                        case SUCCEEDED:
+                            textFieldStatusDisplay.setText(browserStateToStringMap.get(State.SUCCEEDED));
+                            currentURL = webEngine.getLocation();
+                            textFieldController.setText(extractSubStringForTextFieldController(currentURL));
+                            System.out.println("called INTERNAL : " + webEngine.getTitle());
+
+                            printHistory("History called internally", webEngine);
+                            //The above usage here confirmed that the history is saved even if there is an internal page load
+                            break;
+
+                        case CANCELLED:
+                            textFieldStatusDisplay.setText(browserStateToStringMap.get(State.CANCELLED));
+                            System.out.println("\t\t\tCANCELLED execution");
+                            currentURL = webEngine.getLocation();
+                            System.out.println("cancelled url : " + currentURL);
+
+                            //execute file download, as here i am considering that pdf or unsupported formats where given for download
+                            //threading it out in order to keep the UI unaffected
+
+                            //if (currentURL.endsWith(".pdf") || currentURL.endsWith(".PDF") || currentURL.endsWith(".zip") || currentURL.endsWith(".tar.gz") || currentURL.endsWith(".tar") || currentURL.endsWith(".gz") || currentURL.endsWith(".rar") || currentURL.endsWith(".exe") || currentURL.endsWith(".doc") || currentURL.endsWith(".docx") || currentURL.endsWith(".odt") || currentURL.endsWith(".txt") || currentURL.endsWith(".mp3") || currentURL.endsWith(".wma")) {
+                            if (toBeDownloaded(currentURL)) {
+                                Platform.runLater(() -> {
+                                    //new com.vv.export.sandbox.CZ_HttpsDownloadTrial(currentURL);
+                                    try {
+                                        if (currentURL.startsWith(HTTPS_URL_PART))
+                                            new CZ_HttpsDownload(currentURL, getProperty(DOWNLOAD_DESTINATION_PATH, DEFAULT_DOWNLOAD_DEST_PATH)).start(new Stage());
+                                        else {
+                                            if (currentURL.startsWith(WWW))
+                                                currentURL = String.format("%s%s", HTTPS_URL_PART, currentURL);
+                                            new CZ_HttpDownload(currentURL, getProperty(DOWNLOAD_DESTINATION_PATH, DEFAULT_DOWNLOAD_DEST_PATH)).start(new Stage());
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                });
+                            } else {
+                                System.out.println("Else part cancelled out executed --> concerned url : " + currentURL);
+                            }
+                            break;
                     }
                 });
+    }
+
+    private String extractSubStringForTextFieldController(String url) {
+        String localURL = "";
+        try {
+            localURL = url.substring(url.indexOf('/') + 2);
+        } catch (Exception e1) {
+            System.out.println("URL sub-stringing failed!");
+        }
+        return localURL;
     }
 
     private void goBackOrForward(int choice) {
         final WebHistory history = webEngine.getHistory();
         ObservableList<WebHistory.Entry> entryList = history.getEntries();
         int currentIndex = history.getCurrentIndex();
-        //System.out.println("From the back press button! curent index : "+currentIndex);
-        //System.out.println("entryList : "+entryList);
 
         Platform.runLater(() -> {
             try {
-                history.go(entryList.size() > 1
-                        && currentIndex < entryList.size()
+                history.go(entryList.size() > 1 && currentIndex < entryList.size()
                         ? choice
                         : 0);
             } catch (Exception e) {
