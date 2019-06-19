@@ -78,32 +78,13 @@ public class CZ_HttpsDownload extends Application {
         primaryStage.setTitle("Downloading : "+downloadSrcFileName+" ~ "+(maxSize/1024)+" KB");
 
         System.out.println("PASS-1");
-        //actual file donwload command
-
-        /*
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    FileUtils.copyURLToFile(new URL(downloadSrcFilePath), new File(downloadSrcFileName), connectionTimeOut, readTimeOut);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    failedProcess = true;
-                    System.out.println("Download failed!!!!");
-                }
-            }
-        });
-        */
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    FileUtils.copyURLToFile(new URL(downloadSrcFilePath), new File(downloadSrcFileName), connectionTimeOut, readTimeOut);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    failedProcess = true;
-                    System.out.println("Download failed!!!!");
-                }
+        new Thread(() -> {
+            try {
+                FileUtils.copyURLToFile(new URL(downloadSrcFilePath), new File(downloadSrcFileName), connectionTimeOut, readTimeOut);
+            } catch (IOException e) {
+                e.printStackTrace();
+                failedProcess = true;
+                System.out.println("Download failed!!!!");
             }
         }).start();
 
@@ -132,7 +113,7 @@ public class CZ_HttpsDownload extends Application {
                     String displayData = "";
 
                     @Override
-                    protected String call() throws Exception {
+                    protected String call() {
                         while (current[0] < finalMaxSize && !failedProcess) {
                             current[0] = file.length();
                             if (current[0] != prev[0]) {
