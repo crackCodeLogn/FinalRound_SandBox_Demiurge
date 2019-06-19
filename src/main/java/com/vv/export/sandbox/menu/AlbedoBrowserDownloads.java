@@ -131,13 +131,12 @@ public class AlbedoBrowserDownloads extends Application {
 
         try {
             Collections.sort(data, (o1, o2) -> (int) (o2.getDownloadTimeStampLong() - o1.getDownloadTimeStampLong()));
+            int tr = data.size();
+            for (DownloadRecord record : data) {
+                record.setNumber(tr--);
+            }
         } catch (Exception e1) {
             System.out.println("Nothing in the downloads list...");
-        }
-
-        int tr = data.size();
-        for (DownloadRecord record : data) {
-            record.setNumber(tr--);
         }
 
         table.setItems(data);
