@@ -11,20 +11,28 @@ public class DownloadRecord {
     public DownloadRecord() {
     }
 
+    public int getNumber() {
+        return number;
+    }
+
     public void setNumber(int number) {
         this.number = number;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public void setDownloadTimeStamp(String downloadTimeStamp) {
-        this.downloadTimeStamp = downloadTimeStamp;
+    public String getDownloadTimeStamp() {
+        return downloadTimeStamp;
     }
 
-    public void setCommitStatus(boolean commitStatus) {
-        this.commitStatus = commitStatus;
+    public void setDownloadTimeStamp(String downloadTimeStamp) {
+        this.downloadTimeStamp = downloadTimeStamp;
     }
 
     public long getDownloadTimeStampLong() {
@@ -33,5 +41,13 @@ public class DownloadRecord {
 
     public void setDownloadTimeStampLong(long downloadTimeStampLong) {
         this.downloadTimeStampLong = downloadTimeStampLong;
+    }
+
+    public boolean isCommitStatus() {
+        return commitStatus;
+    }
+
+    public void setCommitStatus(boolean commitStatus) {
+        this.commitStatus = commitStatus;
     }
 }
