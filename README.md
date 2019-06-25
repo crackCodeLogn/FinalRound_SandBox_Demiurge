@@ -1,5 +1,5 @@
 # FinalRound_SandBox_Demiurge
-##Major project for Final Year (2018): A web browser based on JavaFX, which implements the sandbox property!!
+## Major project for Final Year (2018): A web browser based on JavaFX, which implements the sandbox property!!
 
 The elaborate description will follow, but some key points before that:<br />
 1. The sandboxing feature for downloads works in Linux version, hence the windows version is simply a web browser thing.<br />
