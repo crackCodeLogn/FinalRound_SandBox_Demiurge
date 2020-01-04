@@ -1,6 +1,7 @@
 .idea/*
-.Logs/*
-.out/*
+Logs/*
+out/*
+target/*
 *.iml
 
 lib/javafx-sdk-11.0.2/legal/*
