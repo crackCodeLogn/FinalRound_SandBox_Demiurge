@@ -37,6 +37,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -69,6 +70,8 @@ public class AlbedoBrowser extends Application implements EventHandler<ActionEve
     private Button buttonAbort;
     private Button buttonMenu;
 
+    private final Map<String, List<String>> headers = new HashMap<>();
+
     private static List<String> downloadFormats = new ArrayList<>();
     private static List<String> siteExtensions = new ArrayList<>();
 
@@ -99,7 +102,8 @@ public class AlbedoBrowser extends Application implements EventHandler<ActionEve
             browser = new WebView();
             webEngine = browser.getEngine();
             webEngine.setJavaScriptEnabled(true);
-            java.net.CookieHandler.setDefault(null);
+            headers.put("Set-Cookie", Collections.singletonList("name=value"));
+            //java.net.CookieHandler.getDefault().put(uri, headers);
         }
 
         final Scene scene = new Scene(new Group());
@@ -344,7 +348,11 @@ public class AlbedoBrowser extends Application implements EventHandler<ActionEve
         textFieldController.setOnAction(e -> {
             final String textFromBar = textFieldController.getText();
             final String finalUrl = logicForGettingUrl(textFromBar);
-
+            try {
+                java.net.CookieHandler.getDefault().put(URI.create(finalUrl), headers);
+            } catch (IOException ex) {
+                System.out.println("Error while cookie population! Err: " + ex);
+            }
             Platform.runLater(() -> webEngine.load(finalUrl));
             System.out.println("URL loaded " + finalUrl);
             printHistory("History called from url typing", webEngine);
